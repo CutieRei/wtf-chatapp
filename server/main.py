@@ -7,22 +7,29 @@ from fastapi.middleware.cors import CORSMiddleware
 
 app = fastapi.FastAPI(debug=True)
 sm = SocketManager(app=app, cors_allowed_origins=[], mount_location="/gateaway")
-app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
+app.add_middleware(
+    CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"]
+)
+
 
 class Message(BaseModel):
     sender: str
     content: str
 
+
 users: dict[str, str] = {"": "System"}
 messages: list[Message] = [Message(sender="System", content="Welcome the chat")]
+
 
 @app.get("/users")
 def get_users():
     return users
 
+
 @app.get("/messages")
 def get_messages():
     return messages
+
 
 @sm.on("connect")
 async def on_connect(sid, environ):
@@ -35,9 +42,13 @@ async def on_connect(sid, environ):
     elif name in users.values():
         raise ConnectionRefusedError("name already exist")
     users[sid] = name
-    msg = Message(sender="System", content=f"{name} Joined the chat")
-    messages.append(msg)
-    await sm.emit("messageAdd", msg.dict())
+    await sm.emit("userAdd", {"name": name}, skip_sid=sid)
+    await sm.emit(
+        "messageAdd",
+        Message(sender="System", content=f"{name} Joined the chat").dict(),
+        skip_sid=sid,
+    )
+
 
 @sm.on("messageAdd")
 async def on_message_add(sid, data):
@@ -47,3 +58,12 @@ async def on_message_add(sid, data):
     messages.append(Message.validate(msg))
     await sm.emit("messageAdd", msg)
 
+
+@sm.on("disconnect")
+async def on_disconnect(sid):
+    name = users.pop(sid)
+    if name:
+        await sm.emit(
+            "messageAdd",
+            Message(sender="System", content=f"{name} Left the chat").dict(),
+        )

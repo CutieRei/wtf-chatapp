@@ -13,9 +13,17 @@ dependencies = [
 ]
 requires-python = ">=3.10"
 license = {text = "WTFPL"}
+[project.optional-dependencies]
 
 [tool.pdm]
 
+[tool.pdm.scripts]
+dev = "uvicorn main:app --port 5174 --host 0.0.0.0 --reload"
+
+[tool.pdm.dev-dependencies]
+dev = [
+    "black>=22.6.0",
+]
 [build-system]
 requires = ["pdm-pep517>=1.0.0"]
 build-backend = "pdm.pep517.api"
