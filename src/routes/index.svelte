@@ -51,7 +51,8 @@
 
 	afterUpdate(() => {
 		if(previousLength < messages.length) {
-			scrollMessageBottom()
+			scrollMessageBottom();
+			previousLength = messages.length;
 		}
 	})
 </script>
@@ -69,8 +70,8 @@
 			<ul class="list-none p-0 m-1">
 				{#each messages as msg}
 					<li class="pl-2 mb-5">
-						<p style="{msg.sender === 'System' ? 'color: #3182ce' : ''}" class="text-xl font-semibold">{@html msg.sender}</p>
-						<p>{@html msg.content}</p>
+						<p style="{msg.sender === 'System' ? 'color: #3182ce' : ''}" class="text-xl font-semibold">{msg.sender}</p>
+						<p>{msg.content}</p>
 					</li>
 				{/each}
 			</ul>
