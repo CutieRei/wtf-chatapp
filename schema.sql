@@ -1,0 +1,20 @@
+DROP TABLE IF EXISTS rooms;
+DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS connected_rooms;
+
+
+CREATE TABLE rooms (
+name VARCHAR(255) PRIMARY KEY NOT NULL,
+password VARCHAR(512));
+
+CREATE TABLE users (
+name VARCHAR(64) PRIMARY KEY NOT NULL,
+password VARCHAR(512) NOT NULL DEFAULT 'SHA512');
+
+CREATE TABLE connected_rooms (
+user VARCHAR(64) NOT NULL,
+room VARCHAR(255) NOT NULL);
+
+ALTER TABLE connected_rooms ADD CONSTRAINT connected_rooms_user_users_name FOREIGN KEY (user) REFERENCES users(name) ON DELETE CASCADE ON UPDATE NO ACTION;
+ALTER TABLE connected_rooms ADD CONSTRAINT connected_rooms_room_rooms_name FOREIGN KEY (room) REFERENCES rooms(name) ON DELETE CASCADE ON UPDATE NO ACTION;
+
