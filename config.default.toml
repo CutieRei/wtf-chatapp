@@ -1,0 +1,15 @@
+[db]
+host="127.0.0.1"
+port=5432
+user="wtf-chatapp"
+password=
+db="wtf-chatapp"
+
+[frontend-svelte]
+host="0.0.0.0"
+port=6731
+
+[backend]
+host="0.0.0.0"
+port=6732
+

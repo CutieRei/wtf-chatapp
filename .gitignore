@@ -10,3 +10,4 @@ node_modules
 __pycache__*
 vite.config.js.*
 .pnpm-debug*
+config.toml
